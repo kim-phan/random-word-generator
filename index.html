@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Word Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&family=Inter:wght@400;600&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #f59e0b;
+            --primary-dark: #d97706;
+            --background-color: #fefce8;
+            --card-background: #ffffff;
+            --text-color: #1e293b;
+            --accent-color: #fbbf24;
+            --success-color: #10b981;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #f59e0b;
+            --primary-dark: #d97706;
+            --background-color: #3a2a5e;
+            --card-background: #4a3a6e;
+            --text-color: #ffffff;
+            --accent-color: #fbbf24;
+            --success-color: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding: 20px;
+            line-height: 1.5;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 20%);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        [data-theme="dark"] body {
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 20%);
+        }
+
+        h1 {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 2rem auto;
+            letter-spacing: -0.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: block;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 0 1rem;
+            animation: titleGlow 3s infinite;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1), 0 2px 4px -1px rgba(245, 158, 11, 0.06);
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            animation: cardAppear 0.5s ease-out;
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.1), 0 4px 6px -2px rgba(245, 158, 11, 0.05);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            transform: scale(1.02);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        .btn-primary {
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: buttonPulse 2s infinite;
+        }
+
+        @keyframes buttonPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+            }
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
+            animation: none;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover::after {
+            left: 100%;
+        }
+
+        .word-badge {
+            display: inline-block;
+            margin: 8px;
+            padding: 10px 16px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(245, 158, 11, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: wordPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes wordPop {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .word-badge:hover {
+            transform: translateY(-3px) scale(1.05) rotate(2deg);
+            box-shadow: 0 4px 8px rgba(245, 158, 11, 0.2);
+        }
+
+        .word-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+
+        .word-badge:hover::before {
+            transform: translateX(100%);
+        }
+
+        .word-number {
+            background-color: var(--primary-dark);
+            padding: 2px 8px;
+            border-radius: 8px;
+            margin-right: 8px;
+            font-weight: 700;
+            box-shadow: 0 1px 2px rgba(245, 158, 11, 0.1);
+            animation: numberSpin 0.5s ease-out;
+        }
+
+        @keyframes numberSpin {
+            from {
+                transform: rotate(-180deg) scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: rotate(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .card-title {
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.2px;
+            position: relative;
+            padding-bottom: 0.5rem;
+            animation: slideIn 0.5s ease-out;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        .form-label {
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .form-select {
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            transform: scale(1.02);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        .form-select option {
+            padding: 0.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .word-badge {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .word-badge:nth-child(1) { animation-delay: 0.1s; }
+        .word-badge:nth-child(2) { animation-delay: 0.2s; }
+        .word-badge:nth-child(3) { animation-delay: 0.3s; }
+        .word-badge:nth-child(4) { animation-delay: 0.4s; }
+        .word-badge:nth-child(5) { animation-delay: 0.5s; }
+        .word-badge:nth-child(6) { animation-delay: 0.6s; }
+        .word-badge:nth-child(7) { animation-delay: 0.7s; }
+        .word-badge:nth-child(8) { animation-delay: 0.8s; }
+        .word-badge:nth-child(9) { animation-delay: 0.9s; }
+        .word-badge:nth-child(10) { animation-delay: 1s; }
+
+        @keyframes titleGlow {
+            0% {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            50% {
+                text-shadow: 2px 2px 8px rgba(245, 158, 11, 0.3);
+            }
+            100% {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-background);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-color);
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-control, .form-select {
+            background-color: var(--card-background);
+            color: var(--text-color);
+            border-color: var(--text-color);
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: var(--card-background);
+            color: var(--text-color);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .copy-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .copy-button:hover {
+            opacity: 1;
+            background-color: rgba(245, 158, 11, 0.1);
+            transform: scale(1.05);
+        }
+
+        .copy-button svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .copy-button.copied {
+            color: var(--success-color);
+        }
+
+        .copy-button.copied::after {
+            content: 'Copied!';
+            position: absolute;
+            top: -30px;
+            right: 0;
+            background: var(--card-background);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeOut 2s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        [data-theme="dark"] .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+            background: linear-gradient(145deg, #4a3a6e, #3a2a5e);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        [data-theme="dark"] .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .form-control,
+        [data-theme="dark"] .form-select {
+            background-color: #3a2a5e;
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .form-control:focus,
+        [data-theme="dark"] .form-select:focus {
+            background-color: #3a2a5e;
+            border-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .word-badge {
+            background: linear-gradient(135deg, #5a4a7e, #4a3a6e);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .word-badge:hover {
+            background: linear-gradient(135deg, #6a5a8e, #5a4a7e);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="dark"] .word-number {
+            background-color: #5a4a7e;
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .copy-button {
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .copy-button:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            background: linear-gradient(145deg, #4a3a6e, #3a2a5e);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        [data-theme="dark"] .card-title {
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .form-label {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>
+            <path class="sun" d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/>
+            <path class="moon" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42m12.72-12.72l1.42-1.42"/>
+        </svg>
+    </button>
+    <div class="container">
+        <h1 class="text-center mb-4">Random Word Generator</h1>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Settings</h5>
+                        <div class="mb-4">
+                            <label for="wordCount" class="form-label">Number of words:</label>
+                            <input type="number" class="form-control" id="wordCount" min="1" max="10" value="5">
+                        </div>
+                        <div class="mb-4">
+                            <label for="mainTheme" class="form-label">Main Category:</label>
+                            <select class="form-select" id="mainTheme">
+                                <option value="">Select a category</option>
+                                <option value="length">Number of Letters</option>
+                                <option value="subject">Subject Matter</option>
+                                <option value="complexity">Word Complexity</option>
+                                <option value="speech">Part of Speech</option>
+                                <option value="starting">Starting Letter</option>
+                            </select>
+                        </div>
+                        <div class="mb-4" id="subThemeContainer" style="display: none;">
+                            <label for="subTheme" class="form-label">Subcategory:</label>
+                            <select class="form-select" id="subTheme">
+                                <!-- Subcategories will be populated dynamically -->
+                            </select>
+                        </div>
+                        <button class="btn btn-primary w-100" id="generateBtn">Generate Words</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Generated Words
+                            <button class="copy-button" id="copyButton" title="Copy words to clipboard">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                </svg>
+                                Copy
+                            </button>
+                        </h5>
+                        <div id="generatedWords" class="mt-3">
+                            <!-- Words will appear here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Theme configuration
+        const themeConfig = {
+            length: {
+                label: "Number of Letters",
+                options: Array.from({length: 10}, (_, i) => ({
+                    value: (i + 3).toString(),
+                    label: `${i + 3} letters`
+                }))
+            },
+            subject: {
+                label: "Subject Matter",
+                options: [
+                    { value: "animals", label: "Animals" },
+                    { value: "nature", label: "Nature" },
+                    { value: "food", label: "Food & Drink" },
+                    { value: "emotions", label: "Emotions" },
+                    { value: "actions", label: "Actions" },
+                    { value: "colors", label: "Colors" },
+                    { value: "professions", label: "Professions" },
+                    { value: "sports", label: "Sports" },
+                    { value: "music", label: "Music" },
+                    { value: "science", label: "Science" }
+                ]
+            },
+            complexity: {
+                label: "Word Complexity",
+                options: [
+                    { value: "simple", label: "Simple (Common, Easy to Understand)" },
+                    { value: "moderate", label: "Moderate (Somewhat Challenging)" },
+                    { value: "complex", label: "Complex (Technical or Advanced)" }
+                ]
+            },
+            speech: {
+                label: "Part of Speech",
+                options: [
+                    { value: "nouns", label: "Nouns" },
+                    { value: "verbs", label: "Verbs" },
+                    { value: "adjectives", label: "Adjectives" },
+                    { value: "adverbs", label: "Adverbs" }
+                ]
+            },
+            starting: {
+                label: "Starting Letter",
+                options: Array.from({length: 26}, (_, i) => ({
+                    value: String.fromCharCode(97 + i),
+                    label: `Starts with '${String.fromCharCode(97 + i).toUpperCase()}'`
+                }))
+            }
+        };
+
+        // Word lists organized by theme and subtheme
+        const wordThemes = {
+            // Default random words (used when no category is selected)
+            default: [
+                // Technical & Digital
+                "monitor", "keyboard", "server", "network", "algorithm", "database", "firewall", "router", "protocol", "interface",
+                // Everyday Objects
+                "chair", "lamp", "clock", "mirror", "bottle", "wallet", "scissors", "umbrella", "notebook", "backpack",
+                // Abstract Concepts
+                "freedom", "justice", "wisdom", "courage", "honor", "duty", "faith", "hope", "truth", "dream",
+                // Actions & Verbs
+                "adjust", "calculate", "construct", "discover", "evaluate", "formulate", "generate", "implement", "navigate", "optimize",
+                // Science & Technology
+                "quantum", "molecule", "circuit", "equation", "hypothesis", "experiment", "analysis", "research", "theory", "discovery",
+                // Business & Finance
+                "budget", "profit", "market", "stock", "invest", "trade", "account", "finance", "economy", "commerce",
+                // Random & Miscellaneous
+                "cub", "quilt", "vault", "wrench", "plasma", "vortex", "zenith", "xylophone", "yacht", "zebra"
+            ],
+            // Length-based words
+            length: {
+                "3": ["cat", "dog", "sun", "run", "fun", "big", "red", "hot", "new", "old", "cup", "pen", "map", "key", "box", "jar", "hat", "fan", "bed", "car"],
+                "4": ["book", "tree", "bird", "fish", "moon", "star", "love", "hope", "play", "jump", "code", "data", "file", "mail", "task", "work", "time", "life", "mind", "soul"],
+                "5": ["apple", "beach", "cloud", "dance", "earth", "happy", "music", "ocean", "peace", "smile", "logic", "query", "table", "chart", "graph", "model", "frame", "style", "theme", "color"],
+                "6": ["beauty", "camera", "dancer", "flower", "garden", "joyful", "nature", "purple", "silver", "wisdom", "server", "client", "system", "device", "memory", "output", "input", "format", "syntax", "method"],
+                "7": ["butter", "diamond", "freedom", "harmony", "journey", "miracle", "rainbow", "treasure", "network", "program", "process", "service", "package", "library", "console", "command", "request", "response", "pattern", "element"],
+                "8": ["beautiful", "brilliant", "champion", "discovery", "elephant", "fantastic", "grateful", "happiness", "mountain", "wonderful", "database", "function", "variable", "constant", "operator", "argument", "parameter", "protocol", "security", "password"],
+                "9": ["adventure", "butterfly", "challenge", "creativity", "discovery", "excitement", "friendship", "happiness", "imagination", "knowledge", "algorithm", "interface", "component", "structure", "framework", "directory", "execution", "iteration", "recursion", "statement"],
+                "10": ["adventurous", "beautifully", "challenger", "creativity", "discoverer", "excitement", "friendship", "happiness", "imagination", "knowledge", "encryption", "validation", "authentication", "authorization", "compilation", "deployment", "initialization", "optimization", "verification", "configuration"],
+                "11": ["adventurous", "beautifully", "challenger", "creativity", "discoverer", "excitement", "friendship", "happiness", "imagination", "knowledge", "application", "architecture", "development", "environment", "implementation", "integration", "maintenance", "performance", "requirement", "specification"],
+                "12": ["adventurous", "beautifully", "challenger", "creativity", "discoverer", "excitement", "friendship", "happiness", "imagination", "knowledge", "documentation", "functionality", "infrastructure", "optimization", "programming", "reliability", "scalability", "security", "usability", "versatility"]
+            },
+            // Subject matter words
+            subject: {
+                animals: ["dog", "cat", "elephant", "lion", "tiger", "bear", "wolf", "fox", "deer", "rabbit", "monkey", "giraffe", "zebra", "rhino", "hippo", "panda", "koala", "kangaroo", "penguin", "dolphin"],
+                nature: ["mountain", "river", "ocean", "forest", "desert", "valley", "canyon", "waterfall", "lake", "meadow", "volcano", "glacier", "tundra", "savanna", "jungle", "prairie", "plateau", "delta", "isthmus", "peninsula"],
+                food: [
+                    // Fruits
+                    "apple", "banana", "orange", "strawberry", "blueberry", "grape", "peach", "pear", "melon", "kiwi",
+                    // Vegetables
+                    "carrot", "broccoli", "spinach", "potato", "tomato", "cucumber", "lettuce", "onion", "garlic", "pepper",
+                    // Meats
+                    "chicken", "beef", "pork", "lamb", "turkey", "bacon", "sausage", "steak", "ham", "salmon",
+                    // Dairy
+                    "cheese", "milk", "yogurt", "butter", "cream", "ice cream", "cottage cheese", "sour cream", "whipped cream", "cream cheese",
+                    // Grains
+                    "bread", "rice", "pasta", "quinoa", "oatmeal", "cereal", "corn", "barley", "wheat", "rye",
+                    // Desserts
+                    "cake", "cookie", "pie", "brownie", "pudding", "cupcake", "donut", "muffin", "cheesecake", "chocolate",
+                    // Beverages
+                    "coffee", "tea", "juice", "soda", "water", "wine", "beer", "milk", "smoothie", "cocktail",
+                    // Snacks
+                    "chips", "popcorn", "nuts", "crackers", "pretzels", "granola", "trail mix", "jerky", "dried fruit", "energy bar",
+                    // Condiments
+                    "ketchup", "mustard", "mayonnaise", "salsa", "hot sauce", "soy sauce", "vinegar", "olive oil", "honey", "jam"
+                ],
+                emotions: ["happy", "joyful", "excited", "peaceful", "calm", "content", "hopeful", "grateful", "loving", "kind", "angry", "sad", "fearful", "anxious", "nervous", "jealous", "proud", "ashamed", "guilty", "lonely"],
+                actions: ["run", "jump", "dance", "sing", "play", "swim", "climb", "fly", "walk", "skip", "write", "read", "think", "learn", "teach", "build", "create", "design", "develop", "program"],
+                colors: ["red", "blue", "green", "yellow", "purple", "orange", "pink", "brown", "black", "white", "gray", "silver", "gold", "maroon", "navy", "teal", "olive", "lime", "cyan", "magenta"],
+                professions: ["doctor", "teacher", "artist", "writer", "scientist", "musician", "chef", "engineer", "nurse", "pilot", "lawyer", "judge", "police", "fireman", "soldier", "farmer", "builder", "designer", "programmer", "analyst"],
+                sports: ["soccer", "basketball", "tennis", "swimming", "running", "cycling", "golf", "baseball", "volleyball", "hockey", "cricket", "rugby", "boxing", "wrestling", "karate", "judo", "archery", "fencing", "rowing", "sailing"],
+                music: ["piano", "guitar", "violin", "drum", "flute", "saxophone", "trumpet", "cello", "clarinet", "harp", "organ", "banjo", "mandolin", "accordion", "harmonica", "trombone", "tuba", "oboe", "bassoon", "xylophone"],
+                science: ["atom", "cell", "energy", "force", "gravity", "light", "matter", "planet", "star", "universe", "quantum", "molecule", "electron", "neutron", "proton", "photon", "neutrino", "quark", "boson", "fermion"]
+            },
+            // Complexity-based words
+            complexity: {
+                simple: [
+                    // Common, everyday words
+                    "cat", "dog", "sun", "run", "fun", "big", "red", "hot", "new", "old",
+                    "book", "tree", "bird", "fish", "moon", "star", "love", "hope", "play", "jump",
+                    "apple", "beach", "cloud", "dance", "earth", "happy", "music", "ocean", "peace", "smile",
+                    "beauty", "camera", "dancer", "flower", "garden", "joyful", "nature", "purple", "silver", "wisdom"
+                ],
+                moderate: [
+                    // Somewhat challenging words
+                    "adventure", "butterfly", "courage", "diamond", "freedom", "harmony", "miracle", "treasure", "wonder", "elephant",
+                    "fantastic", "grateful", "happiness", "wonderful", "champion", "computer", "monitor", "keyboard", "network", "program",
+                    "process", "service", "package", "library", "console", "system", "device", "camera", "dancer", "butterflies",
+                    "challenge", "discovery", "excitement", "friendship", "imagination", "knowledge", "algorithm", "interface", "component", "structure"
+                ],
+                complex: [
+                    // Technical or advanced words
+                    "creativity", "application", "architecture", "development", "environment", "implementation", "integration", "maintenance", "performance", "requirement",
+                    "specification", "documentation", "functionality", "infrastructure", "optimization", "programming", "reliability", "scalability", "security", "usability",
+                    "versatility", "authentication", "authorization", "compilation", "deployment", "initialization", "verification", "configuration", "adventurous", "beautifully"
+                ]
+            },
+            // Part of speech words
+            speech: {
+                nouns: ["book", "tree", "house", "car", "dog", "cat", "sun", "moon", "star", "ocean", "computer", "phone", "table", "chair", "desk", "lamp", "window", "door", "floor", "ceiling"],
+                verbs: ["run", "jump", "dance", "sing", "play", "swim", "climb", "fly", "walk", "skip", "write", "read", "think", "learn", "teach", "build", "create", "design", "develop", "program"],
+                adjectives: ["happy", "sad", "big", "small", "fast", "slow", "hot", "cold", "new", "old", "smart", "dumb", "rich", "poor", "tall", "short", "wide", "narrow", "deep", "shallow"],
+                adverbs: ["quickly", "slowly", "happily", "sadly", "loudly", "quietly", "brightly", "darkly", "easily", "hardly", "clearly", "vaguely", "simply", "complexly", "directly", "indirectly", "naturally", "artificially", "physically", "mentally"]
+            },
+            // Starting letter words
+            starting: {
+                a: ["apple", "adventure", "amazing", "awesome", "animal", "angel", "arrow", "artist", "athlete", "autumn", "algorithm", "analysis", "application", "architecture", "argument", "array", "assignment", "attribute", "authentication", "authorization"],
+                b: ["book", "beach", "butterfly", "beautiful", "brave", "bright", "blue", "bird", "ball", "bridge", "binary", "boolean", "buffer", "byte", "backup", "bandwidth", "browser", "button", "background", "border"],
+                c: ["cat", "cloud", "courage", "creative", "calm", "clear", "cool", "color", "camera", "castle", "class", "code", "compile", "computer", "console", "constant", "constructor", "container", "context", "control"],
+                d: ["dog", "dance", "dream", "daring", "deep", "dazzle", "dolphin", "diamond", "dragon", "delight", "data", "database", "debug", "declare", "default", "define", "delete", "deploy", "design", "develop"],
+                e: ["elephant", "energy", "excellent", "eager", "easy", "elegant", "earth", "eagle", "emerald", "eternal", "element", "error", "event", "execute", "export", "extend", "external", "expression", "encryption", "environment"],
+                f: ["flower", "freedom", "fantastic", "friendly", "fun", "fierce", "forest", "fountain", "feather", "fairy", "function", "file", "format", "framework", "filter", "fetch", "field", "flag", "float", "folder"],
+                g: ["garden", "great", "glorious", "gentle", "gold", "grace", "giraffe", "glacier", "guitar", "gift", "game", "generate", "global", "graph", "grid", "group", "guard", "guide", "garbage", "gather"],
+                h: ["happy", "hope", "harmony", "healing", "heart", "hero", "happiness", "heaven", "honey", "horizon", "handle", "header", "height", "hidden", "history", "host", "hover", "html", "http", "https"],
+                i: ["island", "imagine", "incredible", "inspiring", "intelligent", "innocent", "ice", "ivory", "iris", "infinity", "input", "instance", "integer", "interface", "internet", "iterate", "import", "include", "index", "initial"],
+                j: ["joy", "jump", "jewel", "jolly", "jazz", "jungle", "journey", "justice", "jasmine", "jubilee", "join", "jump", "justify", "javascript", "json", "jquery", "java", "jvm", "jdk", "jre"],
+                k: ["kind", "king", "kite", "keen", "knight", "knowledge", "kaleidoscope", "kitten", "kingdom", "kiss", "key", "keyword", "kernel", "keep", "kill", "kind", "kit", "knock", "know", "knowledge"],
+                l: ["love", "light", "laughter", "lively", "lucky", "lion", "lake", "lily", "legend", "liberty", "loop", "list", "length", "link", "load", "local", "lock", "log", "logic", "library"],
+                m: ["mountain", "magic", "majestic", "merry", "mystic", "moon", "music", "miracle", "mermaid", "majesty", "method", "module", "model", "map", "merge", "message", "meta", "middle", "min", "max"],
+                n: ["nature", "noble", "nice", "nurturing", "new", "night", "nectar", "noble", "nimbus", "noble", "number", "node", "name", "null", "new", "next", "note", "normal", "network", "namespace"],
+                o: ["ocean", "open", "optimistic", "outstanding", "original", "orange", "olive", "opal", "oracle", "oasis", "object", "option", "output", "order", "over", "offset", "open", "operator", "override", "overwrite"],
+                p: ["peace", "play", "powerful", "peaceful", "pure", "proud", "pearl", "phoenix", "paradise", "prince", "program", "process", "package", "parameter", "parent", "parse", "path", "pattern", "pointer", "property"],
+                q: ["queen", "quick", "quiet", "quality", "quest", "quasar", "quill", "quintessence", "quiver", "quicksilver", "query", "queue", "quick", "quiet", "quit", "quote", "quality", "quantity", "quarter", "question"],
+                r: ["rainbow", "river", "radiant", "royal", "rare", "rose", "ruby", "rain", "realm", "radiance", "return", "run", "read", "render", "request", "response", "result", "route", "rule", "random"],
+                s: ["sun", "star", "strong", "sweet", "smart", "sea", "sky", "sapphire", "serenity", "spirit", "string", "system", "server", "script", "style", "source", "select", "set", "sort", "split"],
+                t: ["tree", "true", "triumphant", "tender", "tall", "tiger", "treasure", "twilight", "tulip", "triumph", "type", "text", "time", "table", "test", "template", "thread", "throw", "try", "true"],
+                u: ["unique", "united", "uplifting", "ultimate", "universe", "unity", "unicorn", "utopia", "upward", "unwavering", "update", "user", "use", "unit", "until", "unless", "union", "unique", "unix", "url"],
+                v: ["victory", "valiant", "vibrant", "vital", "valley", "violet", "vista", "virtue", "vortex", "vitality", "value", "variable", "vector", "version", "view", "virtual", "void", "volume", "vowel", "vulnerable"],
+                w: ["wonder", "wise", "wonderful", "wild", "wave", "wind", "willow", "wish", "wisdom", "wonderland", "while", "with", "where", "when", "what", "which", "width", "window", "word", "write"],
+                x: ["xenial", "xylophone", "xanadu", "xenon", "xerophyte", "xenophile", "xenogenesis", "xenolith", "xenophobia", "xenocracy", "xml", "xpath", "xslt", "xhtml", "xss", "xunit", "xcode", "xamarin", "xen", "xenon"],
+                y: ["young", "youth", "yellow", "yearning", "yonder", "yield", "yoga", "yonder", "youthful", "yummy", "year", "yield", "yes", "yet", "you", "your", "yours", "yesterday", "yield", "yonder"],
+                z: ["zeal", "zest", "zenith", "zephyr", "zebra", "zinc", "zircon", "zodiac", "zone", "zestful", "zero", "zip", "zone", "zoom", "z-index", "zlib", "zsh", "zookeeper", "zombie", "zulu"]
+            }
+        };
+
+        let lastGeneratedWords = [];
+        let usedWordsHistory = new Set();
+        const MAX_HISTORY_SIZE = 100;
+
+        // Update subtheme dropdown based on main theme selection
+        document.getElementById('mainTheme').addEventListener('change', function() {
+            const mainTheme = this.value;
+            const subThemeContainer = document.getElementById('subThemeContainer');
+            const subThemeSelect = document.getElementById('subTheme');
+            
+            if (mainTheme) {
+                subThemeContainer.style.display = 'block';
+                subThemeSelect.innerHTML = themeConfig[mainTheme].options
+                    .map(option => `<option value="${option.value}">${option.label}</option>`)
+                    .join('');
+            } else {
+                subThemeContainer.style.display = 'none';
+            }
+        });
+
+        // Generate random words based on theme and subtheme
+        function generateRandomWords(count, mainTheme, subTheme) {
+            const availableWords = mainTheme === 'default' 
+                ? wordThemes.default 
+                : wordThemes[mainTheme][subTheme];
+            
+            // Filter out recently used words
+            const filteredWords = availableWords.filter(word => !usedWordsHistory.has(word));
+            
+            // If we don't have enough unique words, reset the history
+            if (filteredWords.length < count) {
+                usedWordsHistory.clear();
+                return generateRandomWords(count, mainTheme, subTheme);
+            }
+
+            const result = [];
+            const usedIndices = new Set();
+
+            // Use Fisher-Yates shuffle for better randomization
+            const shuffledWords = [...filteredWords];
+            for (let i = shuffledWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledWords[i], shuffledWords[j]] = [shuffledWords[j], shuffledWords[i]];
+            }
+
+            // Select the first 'count' words from the shuffled array
+            result.push(...shuffledWords.slice(0, count));
+
+            // Update history
+            result.forEach(word => usedWordsHistory.add(word));
+            
+            // Keep history size manageable
+            if (usedWordsHistory.size > MAX_HISTORY_SIZE) {
+                const wordsToRemove = Array.from(usedWordsHistory).slice(0, usedWordsHistory.size - MAX_HISTORY_SIZE);
+                wordsToRemove.forEach(word => usedWordsHistory.delete(word));
+            }
+
+            lastGeneratedWords = [...result];
+            return result;
+        }
+
+        // Update the display with generated words
+        function updateWordDisplay(words) {
+            const wordDisplay = document.getElementById('generatedWords');
+            wordDisplay.innerHTML = words.map((word, index) => 
+                `<span class="word-badge">
+                    <span class="word-number">${index + 1}</span>
+                    ${word}
+                </span>`
+            ).join('');
+        }
+
+        // Copy words to clipboard
+        function copyWordsToClipboard() {
+            const words = Array.from(document.querySelectorAll('.word-badge'))
+                .map(badge => badge.textContent.trim())
+                .join('\n');
+            
+            navigator.clipboard.writeText(words).then(() => {
+                const copyButton = document.getElementById('copyButton');
+                copyButton.classList.add('copied');
+                setTimeout(() => {
+                    copyButton.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy words: ', err);
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners
+            document.getElementById('generateBtn').addEventListener('click', function() {
+                const count = parseInt(document.getElementById('wordCount').value);
+                const mainTheme = document.getElementById('mainTheme').value;
+                const subTheme = document.getElementById('subTheme').value;
+                
+                if (count >= 1 && count <= 10) {
+                    let randomWords;
+                    if (mainTheme && subTheme) {
+                        randomWords = generateRandomWords(count, mainTheme, subTheme);
+                    } else {
+                        randomWords = generateRandomWords(count, 'default', 'default');
+                    }
+                    updateWordDisplay(randomWords);
+                } else {
+                    alert('Please enter a number between 1 and 10');
+                }
+            });
+
+            document.getElementById('copyButton').addEventListener('click', copyWordsToClipboard);
+
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+            
+            // Check for saved theme preference or use system preference
+            const currentTheme = localStorage.getItem('theme') || 
+                (prefersDarkScheme.matches ? 'dark' : 'light');
+            
+            // Apply the theme
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            
+            // Update the toggle button icon
+            function updateToggleIcon() {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                const sun = themeToggle.querySelector('.sun');
+                const moon = themeToggle.querySelector('.moon');
+                
+                if (isDark) {
+                    sun.style.display = 'none';
+                    moon.style.display = 'block';
+                } else {
+                    sun.style.display = 'block';
+                    moon.style.display = 'none';
+                }
+            }
+            
+            // Initialize the icon
+            updateToggleIcon();
+            
+            // Toggle theme on button click
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateToggleIcon();
+            });
+            
+            // Listen for system theme changes
+            prefersDarkScheme.addEventListener('change', (e) => {
+                if (!localStorage.getItem('theme')) {
+                    document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+                    updateToggleIcon();
+                }
+            });
+        });
+
+        // Add syllable counting function
+        function countSyllables(word) {
+            word = word.toLowerCase();
+            if (word.length <= 3) return 1;
+            
+            // Remove silent 'e' at the end
+            word = word.replace(/(?:[^laeiouy]|ed|[^laeiouy]e)$/, '');
+            
+            // Handle common vowel combinations that form single syllables
+            word = word.replace(/[aeiouy]{2,}/g, 'a');
+            
+            // Count remaining vowel groups
+            word = word.replace(/[^aeiouy]+/g, ' ');
+            return word.trim().split(' ').length;
+        }
+
+        // Add verification function
+        function verifySyllableCounts() {
+            const syllableLists = wordThemes.syllables;
+            for (const [count, words] of Object.entries(syllableLists)) {
+                const incorrectWords = words.filter(word => countSyllables(word) !== parseInt(count));
+                if (incorrectWords.length > 0) {
+                    console.warn(`Incorrect syllable count for words in ${count}-syllable list:`, incorrectWords);
+                }
+            }
+        }
+
+        // Call verification on load
+        window.onload = function() {
+            verifySyllableCounts();
+        };
+    </script>
+</body>
+</html>
