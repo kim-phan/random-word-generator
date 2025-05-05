@@ -15,6 +15,8 @@
             --text-color: #1e293b;
             --accent-color: #fbbf24;
             --success-color: #10b981;
+            --gradient-start: #f59e0b;
+            --gradient-end: #fbbf24;
         }
 
         [data-theme="dark"] {
@@ -25,13 +27,15 @@
             --text-color: #ffffff;
             --accent-color: #fbbf24;
             --success-color: #10b981;
+            --gradient-start: #4a3a6e;
+            --gradient-end: #3a2a5e;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
-            padding: 20px;
+            padding: 10px;
             line-height: 1.5;
             min-height: 100vh;
             background-image: 
@@ -40,17 +44,17 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        [data-theme="dark"] body {
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 20%);
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
         }
 
         h1 {
             font-family: 'Arvo', serif;
             font-weight: 700;
             color: var(--text-color);
-            margin: 2rem auto;
+            margin: 1rem auto;
             letter-spacing: -0.5px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
             position: relative;
@@ -60,6 +64,7 @@
             max-width: 600px;
             padding: 0 1rem;
             animation: titleGlow 3s infinite;
+            font-size: 2.2rem;
         }
 
         h1::after {
@@ -70,19 +75,190 @@
             transform: translateX(-50%);
             width: 80%;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
             border-radius: 2px;
         }
 
         .card {
             background-color: var(--card-background);
             border: none;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1), 0 2px 4px -1px rgba(245, 158, 11, 0.06);
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
             transition: all 0.3s ease;
             overflow: hidden;
             animation: cardAppear 0.5s ease-out;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        .card-title {
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.2px;
+            position: relative;
+            padding-bottom: 0.5rem;
+            animation: slideIn 0.5s ease-out;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 2px;
+        }
+
+        [data-theme="dark"] .card-title::after {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            height: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        input[type="number"] {
+            width: 100px;
+            text-align: center;
+            height: 38px;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            transform: scale(1.02);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+        }
+
+        .btn-primary {
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: buttonPulse 2s infinite;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            animation: none;
+            background: var(--primary-dark);
+        }
+
+        .word-badge {
+            display: inline-block;
+            margin: 8px;
+            padding: 10px 16px;
+            border-radius: 12px;
+            background: var(--primary-color);
+            color: white;
+            font-family: 'Lato', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: wordPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .word-badge:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            background: var(--primary-dark);
+        }
+
+        .word-number {
+            background-color: var(--primary-dark);
+            padding: 4px 10px;
+            border-radius: 8px;
+            margin-right: 10px;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: numberSpin 0.5s ease-out;
+        }
+
+        .copy-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            font-weight: 600;
+        }
+
+        .copy-button:hover {
+            opacity: 1;
+            background-color: rgba(245, 158, 11, 0.1);
+            transform: scale(1.05);
+        }
+
+        .copy-button.copied {
+            color: var(--success-color);
+        }
+
+        .copy-button.copied::after {
+            content: 'Copied!';
+            position: absolute;
+            top: -30px;
+            right: 0;
+            background: var(--card-background);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeOut 2s forwards;
+        }
+
+        @keyframes titleGlow {
+            0% {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            50% {
+                text-shadow: 2px 2px 8px rgba(245, 158, 11, 0.3);
+            }
+            100% {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            }
         }
 
         @keyframes cardAppear {
@@ -96,42 +272,6 @@
             }
         }
 
-        .card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.1), 0 4px 6px -2px rgba(245, 158, 11, 0.05);
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-
-        .form-control {
-            border-radius: 12px;
-            padding: 0.75rem 1rem;
-            border: 2px solid #e2e8f0;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            transform: scale(1.02);
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-        }
-
-        .btn-primary {
-            font-family: 'Lato', sans-serif;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            border: none;
-            border-radius: 12px;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            animation: buttonPulse 2s infinite;
-        }
-
         @keyframes buttonPulse {
             0% {
                 box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
@@ -142,44 +282,6 @@
             100% {
                 box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
             }
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
-            animation: none;
-        }
-
-        .btn-primary::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .btn-primary:hover::after {
-            left: 100%;
-        }
-
-        .word-badge {
-            display: inline-block;
-            margin: 8px;
-            padding: 10px 16px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white;
-            font-family: 'Lato', sans-serif;
-            font-size: 1rem;
-            font-weight: 500;
-            box-shadow: 0 2px 4px rgba(245, 158, 11, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            animation: wordPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         @keyframes wordPop {
@@ -196,37 +298,6 @@
             }
         }
 
-        .word-badge:hover {
-            transform: translateY(-3px) scale(1.05) rotate(2deg);
-            box-shadow: 0 4px 8px rgba(245, 158, 11, 0.2);
-        }
-
-        .word-badge::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: translateX(-100%);
-            transition: 0.5s;
-        }
-
-        .word-badge:hover::before {
-            transform: translateX(100%);
-        }
-
-        .word-number {
-            background-color: var(--primary-dark);
-            padding: 2px 8px;
-            border-radius: 8px;
-            margin-right: 8px;
-            font-weight: 700;
-            box-shadow: 0 1px 2px rgba(245, 158, 11, 0.1);
-            animation: numberSpin 0.5s ease-out;
-        }
-
         @keyframes numberSpin {
             from {
                 transform: rotate(-180deg) scale(0);
@@ -238,87 +309,10 @@
             }
         }
 
-        .card-title {
-            font-family: 'Lato', sans-serif;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.2px;
-            position: relative;
-            padding-bottom: 0.5rem;
-            animation: slideIn 0.5s ease-out;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            border-radius: 2px;
-        }
-
-        .form-label {
-            font-family: 'Lato', sans-serif;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text-color);
-        }
-
-        .form-select {
-            border-radius: 12px;
-            padding: 0.75rem 1rem;
-            border: 2px solid #e2e8f0;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .form-select:focus {
-            transform: scale(1.02);
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-        }
-
-        .form-select option {
-            padding: 0.5rem;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .word-badge {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-
-        .word-badge:nth-child(1) { animation-delay: 0.1s; }
-        .word-badge:nth-child(2) { animation-delay: 0.2s; }
-        .word-badge:nth-child(3) { animation-delay: 0.3s; }
-        .word-badge:nth-child(4) { animation-delay: 0.4s; }
-        .word-badge:nth-child(5) { animation-delay: 0.5s; }
-        .word-badge:nth-child(6) { animation-delay: 0.6s; }
-        .word-badge:nth-child(7) { animation-delay: 0.7s; }
-        .word-badge:nth-child(8) { animation-delay: 0.8s; }
-        .word-badge:nth-child(9) { animation-delay: 0.9s; }
-        .word-badge:nth-child(10) { animation-delay: 1s; }
-
-        @keyframes titleGlow {
-            0% {
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            }
-            50% {
-                text-shadow: 2px 2px 8px rgba(245, 158, 11, 0.3);
-            }
-            100% {
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
         }
 
         @keyframes slideIn {
@@ -329,6 +323,60 @@
             to {
                 transform: translateX(0);
                 opacity: 1;
+            }
+        }
+
+        /* Dark theme specific styles */
+        [data-theme="dark"] .card {
+            background: linear-gradient(145deg, var(--gradient-start), var(--gradient-end));
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] .form-control, [data-theme="dark"] .form-select {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .form-control:focus, [data-theme="dark"] .form-select:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .word-badge {
+            background: var(--primary-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="dark"] .word-number {
+            background-color: var(--primary-dark);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="dark"] .card-title {
+            color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="dark"] .form-label {
+            color: #ffffff;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+                margin: 0.5rem auto;
+            }
+            
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
             }
         }
 
@@ -362,137 +410,20 @@
 
         [data-theme="dark"] .theme-toggle {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .form-control, .form-select {
-            background-color: var(--card-background);
-            color: var(--text-color);
-            border-color: var(--text-color);
-        }
-
-        .form-control:focus, .form-select:focus {
-            background-color: var(--card-background);
-            color: var(--text-color);
-        }
-
-        .form-control::placeholder {
-            color: var(--text-color);
-            opacity: 0.7;
-        }
-
-        .copy-button {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
-        .copy-button:hover {
-            opacity: 1;
-            background-color: rgba(245, 158, 11, 0.1);
-            transform: scale(1.05);
-        }
-
-        .copy-button svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        .copy-button.copied {
-            color: var(--success-color);
-        }
-
-        .copy-button.copied::after {
-            content: 'Copied!';
-            position: absolute;
-            top: -30px;
-            right: 0;
-            background: var(--card-background);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            animation: fadeOut 2s forwards;
-        }
-
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            70% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
-        [data-theme="dark"] .card {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
-            background: linear-gradient(145deg, #4a3a6e, #3a2a5e);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        [data-theme="dark"] .card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-        }
-
-        [data-theme="dark"] .form-control,
-        [data-theme="dark"] .form-select {
-            background-color: #3a2a5e;
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
-
-        [data-theme="dark"] .form-control:focus,
-        [data-theme="dark"] .form-select:focus {
-            background-color: #3a2a5e;
-            border-color: var(--primary-color);
-            color: #ffffff;
-        }
-
-        [data-theme="dark"] .word-badge {
-            background: linear-gradient(135deg, #5a4a7e, #4a3a6e);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            color: #ffffff;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(145deg, var(--gradient-start), var(--gradient-end));
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         [data-theme="dark"] .word-badge:hover {
-            background: linear-gradient(135deg, #6a5a8e, #5a4a7e);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            background: var(--primary-dark);
         }
 
-        [data-theme="dark"] .word-number {
-            background-color: #5a4a7e;
-            color: #ffffff;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        [data-theme="dark"] .btn-primary {
+            background: var(--primary-color);
         }
 
-        [data-theme="dark"] .copy-button {
-            color: #ffffff;
-        }
-
-        [data-theme="dark"] .copy-button:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        [data-theme="dark"] .theme-toggle {
-            background: linear-gradient(145deg, #4a3a6e, #3a2a5e);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        [data-theme="dark"] .card-title {
-            color: #ffffff;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        [data-theme="dark"] .form-label {
-            color: #ffffff;
+        [data-theme="dark"] .btn-primary:hover {
+            background: var(--primary-dark);
         }
     </style>
 </head>
@@ -738,6 +669,8 @@
         let lastGeneratedWords = [];
         let usedWordsHistory = new Set();
         const MAX_HISTORY_SIZE = 100;
+        const MIN_BATCHES_BEFORE_REUSE = 10;
+        let batchCount = 0;
 
         // Update subtheme dropdown based on main theme selection
         document.getElementById('mainTheme').addEventListener('change', function() {
@@ -764,10 +697,48 @@
             // Filter out recently used words
             const filteredWords = availableWords.filter(word => !usedWordsHistory.has(word));
             
-            // If we don't have enough unique words, reset the history
+            // If we don't have enough unique words, check if we can reset the history
             if (filteredWords.length < count) {
-                usedWordsHistory.clear();
-                return generateRandomWords(count, mainTheme, subTheme);
+                // Only reset if we've gone through enough batches
+                if (batchCount >= MIN_BATCHES_BEFORE_REUSE) {
+                    usedWordsHistory.clear();
+                    batchCount = 0;
+                    return generateRandomWords(count, mainTheme, subTheme);
+                } else {
+                    // If we can't reset yet, try to find words that haven't been used recently
+                    const allWords = mainTheme === 'default' 
+                        ? wordThemes.default 
+                        : wordThemes[mainTheme][subTheme];
+                    
+                    // Create a map of words to their last usage batch
+                    const wordUsageMap = new Map();
+                    const historyArray = Array.from(usedWordsHistory);
+                    
+                    // Find words that haven't been used in the last MIN_BATCHES_BEFORE_REUSE batches
+                    const availableWords = allWords.filter(word => {
+                        const lastUsedIndex = historyArray.lastIndexOf(word);
+                        return lastUsedIndex === -1 || 
+                               (batchCount - lastUsedIndex) >= MIN_BATCHES_BEFORE_REUSE;
+                    });
+                    
+                    if (availableWords.length < count) {
+                        // If still not enough words, use the ones that haven't been used the longest
+                        const sortedWords = allWords
+                            .map(word => ({
+                                word,
+                                lastUsed: historyArray.lastIndexOf(word)
+                            }))
+                            .sort((a, b) => a.lastUsed - b.lastUsed);
+                        
+                        return sortedWords
+                            .slice(0, count)
+                            .map(item => item.word);
+                    }
+                    
+                    return availableWords
+                        .sort(() => Math.random() - 0.5)
+                        .slice(0, count);
+                }
             }
 
             const result = [];
@@ -785,6 +756,9 @@
 
             // Update history
             result.forEach(word => usedWordsHistory.add(word));
+            
+            // Increment batch counter
+            batchCount++;
             
             // Keep history size manageable
             if (usedWordsHistory.size > MAX_HISTORY_SIZE) {
